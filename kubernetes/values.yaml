@@ -1,0 +1,58 @@
+hub:
+  image: dalmatialab/jupyterhub
+  imageTag: 1.0-rc-3
+  nodeSelector: false
+  secret: 
+  timeout: 120
+  loglevel: "INFO"
+  storage:
+    enabled: true
+    volumeMounts:
+      - mountPath: /etc/jupyterhub/config/
+        name: config
+    volumes:
+      - name: config
+        configMap:
+          name: hub-config
+
+proxy:
+  nodePort: 
+  nodeSelector: false
+  secret: 
+    
+singleuserconfig:
+  auth:
+    admin:
+      access: true
+      users:
+      - admin
+    type: dummy
+    dummy:
+      password: admin
+    whitelist:
+      users:
+      - admin
+  singleuser:
+    extraContainers: 
+    - name: restapi
+      image: domo123/baztide:restapi
+    cmd: 
+    defaultUrl: /
+    events: true
+    extraEnv:
+      APP_PORT: "5000"
+    fsGid: 0
+    uid: 0
+    image:
+      name: dalmatialab/jupyterhub-nginx
+      pullPolicy: Always
+      tag: 1.0-rc-1
+    imagePullPolicy: Always
+    networkTools:
+      image:
+        name: jupyterhub/k8s-network-tools
+        tag: 0.8.2
+    nodeSelector:
+      jupytersingleuser: "true"
+    startTimeout: 800
+    storage:

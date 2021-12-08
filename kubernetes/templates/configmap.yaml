@@ -1,0 +1,8 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: hub-config
+data:
+  values.yaml: | 
+{{ toYaml .Values.singleuserconfig | indent 4 }}
+---
