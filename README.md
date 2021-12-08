@@ -17,7 +17,7 @@ The aim of this project is to modify [Jupyterhub](https://github.com/dalmatialab
 
 Deployment of the Jupyterhub in Kubernetes is achieved by using [Helm charts](https://github.com/dalmatialab/jupyterhub-nginx/tree/main/kubernetes). Default configuration of the Jupyterhub is consisted of the Jupyterhub pod, [Configurable http proxy](https://github.com/jupyterhub/configurable-http-proxy) pod and multiple single-user (Notebook server) pods. A single-user pod is consisted of one container, but there is an option to insert additional containers in that pod. 
 
-The idea is to **replace the Notebook server with the Nginx server** that will be used for redirecting requests to the desired application (inserted into Pod by using an additional container option). Nginx is deployed as a reverse proxy, and only parameter that **needs to be defined is the PORT of the desired application**, since containers in Pod can communicate using localhost. This configuration used benefits of JupyterHub and Kubernetes to deploy containerized applications. 
+The idea is to **replace the Notebook server in the single-user pod with the Nginx server** that will be used to redirect requests to the desired application (inserted into Pod by using an additional container option). Mentioned nginx will be used as a reverse proxy, and only parameter that **needs to be defined is the PORT of the desired application**, since containers in Pod can communicate using localhost. 
 
 ## Environment variables
 
@@ -27,5 +27,5 @@ This is variable that specifies the PORT number of the desired application. Defa
 
 ## Note
 
-For this configuration, we decided to keep source code of the Jupyterhub, therefore we had to adjust Nginx reverse proxy server. By default, Jupyter Notebook server uses port 8888, and it is accessed (thanks to configurable-http proxy and OAUTH) by the ENV variable passed from the hub. Simplified, this variable is just an URL path (/user/username) that matches the user's credentials, also this variable shouldn't be changed. [Reverse proxy](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/) is configured to use port 8888, and to pass all requests (that match certain path) to the localhost:APP_PORT.
+For this configuration, we decided to keep source code of the Jupyterhub, therefore we had to adjust Nginx server. By default, Jupyter Notebook server uses port 8888, and it is accessed (thanks to configurable-http proxy and OAUTH) by the ENV variable passed from the hub. Simplified, this variable is just an URL path (/user/username) that matches the user's credentials, also this variable shouldn't be changed. Having in mind this, [Reverse proxy](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/) is configured to use port 8888, and to pass all requests (that match certain path) to the localhost:APP_PORT.
  
